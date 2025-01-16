@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Editor } from "@monaco-editor/react";
 import { useSocket } from "../context/SocketProvider";
 
-const CodeEditor = ({ room }) => {
+const CodeEditor = ({ room, language }) => {
   const socket = useSocket();
   const [editorValue, setEditorValue] = useState(null);
 
@@ -22,7 +22,7 @@ const CodeEditor = ({ room }) => {
     socket.on("code-change", handleCodeChange);
 
     return () => {
-      socket.on("code-change", handleCodeChange);
+      socket.off("code-change", handleCodeChange);
     };
   }, [socket, handleCodeChange]);
 
@@ -33,6 +33,7 @@ const CodeEditor = ({ room }) => {
         theme="vs-dark"
         defaultLanguage="javascript"
         defaultValue="// Your code goes here"
+        language={language ?? "javascript"}
         value={editorValue}
         onChange={handleEditorChange}
       />

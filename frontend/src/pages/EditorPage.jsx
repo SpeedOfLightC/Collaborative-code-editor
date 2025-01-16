@@ -5,9 +5,12 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { useSocket } from "../context/SocketProvider";
 import toast from "react-hot-toast";
 
+const options = ["javascript", "html", "css", "cpp", "c", "python", "java"];
+
 const EditorPage = () => {
   const [clientsList, setClientsList] = useState([]);
   const [remoteSocketID, setRemoteSocketID] = useState(null);
+  const [language, setLanguage] = useState("");
   const { roomId } = useParams();
   const socket = useSocket();
   const location = useLocation();
@@ -56,12 +59,20 @@ const EditorPage = () => {
     navigate("/");
   }, [socket]);
 
+  const handleLanguageChange = (e) => {
+    setLanguage(e.target.value);
+  };
+
   return (
     <div className="mainWrap">
       <div className="aside">
         <div className="asideInner">
-          <div className="logo">
-            <img className="logoImage" src="/code-sync.png" alt="logo" />
+          <div className="language-options">
+            <select onChange={handleLanguageChange}>
+              {options.map((option, index) => {
+                return <option key={index}>{option}</option>;
+              })}
+            </select>
           </div>
           <h3>Connected</h3>
           <div className="clientsList">
@@ -78,6 +89,7 @@ const EditorPage = () => {
               ))}
           </div>
         </div>
+
         <button className="btn copyBtn" onClick={copyRoomId}>
           Copy ROOM ID
         </button>
@@ -86,7 +98,7 @@ const EditorPage = () => {
         </button>
       </div>
       <div className="editorWrap">
-        <CodeEditor room={roomId} />
+        <CodeEditor room={roomId} language={language} />
       </div>
     </div>
   );
